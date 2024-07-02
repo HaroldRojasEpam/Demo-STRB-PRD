@@ -1,0 +1,35 @@
+version: '3.4'
+networks:
+  app-network-public:
+    driver: bridge
+
+volumes:
+  sql-server-data:
+    driver: local
+  sqldata:
+  sqllog:
+  sqlbackup:
+
+services:
+  starbucksdemo:
+    image: starbucksdemo
+    build:
+      context: .
+      dockerfile: StarbucksDemo/Dockerfile
+
+  starbucksdemo-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: starbucksdemo-db-sqlserver
+    networks:
+        - app-network-public
+    restart: always
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=dL*vYDmxr@j
+      - MSSQL_PID=Developer
+    ports:
+        - '1433:1433'
+    volumes:
+      - ./Db:/var/opt/mssql/data
+
+
